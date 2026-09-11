@@ -9,7 +9,9 @@ export default function BookCard({ book, onReserve }) {
         {book.available ? "Disponivel" : "Reservado"}
       </span>
 
-      <button onClick={() => onReserve(book.id)}>Reservar</button>
+      <button onClick={() => onReserve(book.id)}>
+        {book.available ? "Reservar" : "Devolver"}
+      </button>
     </article>
   );
 }
