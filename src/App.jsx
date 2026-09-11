@@ -3,6 +3,7 @@ import "./App.css";
 import BookList from "./components/BookList";
 import Panel from "./components/Panel";
 import { books } from "./data/books";
+import BookForm from "./components/BookForm";
 
 export default function App() {
   // 2. Guarda a lista de livros no estado
@@ -27,6 +28,11 @@ export default function App() {
     setBookList(updatedBooks);
   }
 
+  // Nova função para adicionar o livro mantendo a imutabilidade
+  function handleAddBook(newBook) {
+    setBookList([...bookList, newBook])
+  }
+
   return (
     <main className="app">
       <header className="hero">
@@ -34,13 +40,16 @@ export default function App() {
         <h1>Reserva de livros do acervo.</h1>
         <p>Consulte a disponibilidade e reserve o que precisar.</p>
 
-        {/* Mostrando o contador no topo da página */}
         <p className="counter">
           <strong>
             {availableBooks} de {totalBooks} livros disponíveis
           </strong>
         </p>
       </header>
+
+      <Panel title="Novo livro">
+        <BookForm onAddBook={handleAddBook} />
+      </Panel>
 
       <Panel title="Acervo Disponível">
         <BookList books={bookList} onReserve={handleReserve} />
