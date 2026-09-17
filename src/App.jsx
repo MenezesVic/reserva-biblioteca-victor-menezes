@@ -1,36 +1,48 @@
-import { useState } from "react"; // 1. Importe o useState do React
+import { useState, useEffect } from "react";
 import "./App.css";
 import BookList from "./components/BookList";
 import Panel from "./components/Panel";
 import { books } from "./data/books";
 import BookForm from "./components/BookForm";
 
-export default function App() {
-  // 2. Guarda a lista de livros no estado
-  const [bookList, setBookList] = useState(books);
+const STORAGE_KEY = "reserva-biblioteca:books";
 
-  // 3. O contador precisa ser calculado (não criado com outro useState)
+function loadBooks() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return books;
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return books;
+    return parsed;
+  } catch {
+    return books;
+  }
+}
+
+export default function App() {
+  const [bookList, setBookList] = useState(loadBooks);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(bookList));
+  }, [bookList]);
+
   const totalBooks = bookList.length;
   const availableBooks = bookList.filter((book) => book.available).length;
 
-  // 4. Troca o alerta por uma atualização imutável
   function handleReserve(bookId) {
-    const updatedBooks = bookList.map((book) => {
-      // Se for o livro clicado, cria uma cópia dele invertendo o 'available'
-      if (book.id === bookId) {
-        return { ...book, available: !book.available };
-      }
-      // Se não for, devolve o livro intacto
-      return book;
-    });
-
-    // Atualiza o estado com a nova lista
+    const updatedBooks = bookList.map((book) =>
+      book.id === bookId
+        ? {
+            ...book,
+            available: !book.available,
+          }
+        : book,
+    );
     setBookList(updatedBooks);
   }
 
-  // Nova função para adicionar o livro mantendo a imutabilidade
   function handleAddBook(newBook) {
-    setBookList([...bookList, newBook])
+    setBookList([...bookList, newBook]);
   }
 
   return (

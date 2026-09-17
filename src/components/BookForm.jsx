@@ -41,7 +41,6 @@ export default function BookForm({ onAddBook }) {
 
   return (
     <form onSubmit={handleSubmit} className="book-form">
-      {/* Exibe a mensagem condicionalmente se houver erro */}
       {error && (
         <p className="error-message" style={{ color: "red" }}>
           {error}
